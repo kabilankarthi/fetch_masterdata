@@ -215,7 +215,7 @@ def insert_from_values(
 
     # db.execute(text(sql), values)
     # db.commit()
-    return sql
+    # return sql
 
     return {
         "message": "Insert completed",
