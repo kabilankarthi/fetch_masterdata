@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends,Body
+from fastapi import FastAPI, Depends,Body,HTTPException
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from deps import get_db1, get_db2
@@ -129,7 +129,7 @@ def dynamic_select(
                 joins.append(f"""
                     LEFT JOIN {fk['target_schema']}.{target} {alias_map[target]}
                     ON {alias_map[current_table]}.{fk['source_column']}
-                       = {alias_map[target]}.{fk['target_column']}
+                       = {alias_map[target]}.{fk['target_column']} and {alias_map[target]}.is_deleted = false
                 """)
 
             current_table = target
@@ -158,9 +158,9 @@ def dynamic_select(
         SELECT {", ".join(select_columns)}
         FROM {schema}.{base_table} t0
         {" ".join(joins)}
-        LIMIT 100
+        where t0.valid_to is null
     """
-    # return sql
+    return sql
 
     return db1.execute(text(sql)).mappings().all()
 
