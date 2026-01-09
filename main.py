@@ -160,7 +160,7 @@ def dynamic_select(
         {" ".join(joins)}
         where t0.valid_to is null
     """
-    return sql
+    # return sql
 
     return db1.execute(text(sql)).mappings().all()
 
